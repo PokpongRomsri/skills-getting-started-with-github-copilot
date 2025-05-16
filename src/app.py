@@ -51,7 +51,22 @@ def root():
 def get_activities():
     return activities
 
+# Validate student is not already signed up for the activity
+@app.get("/activities/{activity_name}")
+def get_activity(activity_name: str):
+    """Get details of a specific activity"""
+    # Validate activity exists
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
 
+    # Get the specificy activity
+    activity = activities[activity_name]
+
+    # Check if student is already signed up
+    email = "   "  # Placeholder for student email
+    if email in activity["participants"]:
+        raise HTTPException(status_code=400, detail="Already signed up for this activity")
+    return activity                         
 @app.post("/activities/{activity_name}/signup")
 def signup_for_activity(activity_name: str, email: str):
     """Sign up a student for an activity"""
